@@ -19,7 +19,7 @@ if st.button("📤 Gửi báo cáo"):
         st.error("⚠️ Vui lòng nhập đầy đủ tất cả các trường bắt buộc!")
         st.stop()
 
-    openai.api_key = openai_api_key
+    client = openai.OpenAI(api_key=openai_api_key)
 
     # === Giả lập thông tin WHOIS để test UI ===
     registrar = "namecheap"  # hoặc thay bằng "godaddy" để test nhánh khác
@@ -43,11 +43,11 @@ if st.button("📤 Gửi báo cáo"):
 
     with st.spinner("🧠 Đang soạn nội dung email bằng ChatGPT..."):
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[{"role": "user", "content": prompt}]
             )
-            email_body = response['choices'][0]['message']['content']
+            email_body = response.choices[0].message.content
         except Exception as e:
             st.error(f"❌ Lỗi khi gọi OpenAI API: {e}")
             st.stop()
