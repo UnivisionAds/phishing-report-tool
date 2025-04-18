@@ -4,6 +4,8 @@ from email.message import EmailMessage
 
 # === Giao diện nhập liệu ===
 st.set_page_config(page_title="Phishing Report Tool", page_icon="🛡️")
+st.write("✅ App đã khởi động!")
+
 st.title("🛡️ Phishing Report Tool")
 
 sender_email = st.text_input("📧 Nhập Gmail của bạn (dùng để gửi)")
