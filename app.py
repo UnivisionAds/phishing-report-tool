@@ -4,23 +4,19 @@ from email.message import EmailMessage
 
 # === Giao diện nhập liệu ===
 st.set_page_config(page_title="Phishing Report Tool", page_icon="🛡️")
-st.write("✅ App đã khởi động!")
-
 st.title("🛡️ Phishing Report Tool")
 
 sender_email = st.text_input("📧 Nhập Gmail của bạn (dùng để gửi)")
 password = st.text_input("🔑 Nhập App Password Gmail", type="password")
-openai_api_key = st.text_input("🔐 Nhập Poe Token (cookie p-b)", type="password")
 domain = st.text_input("🌐 Nhập tên miền vi phạm")
 issue_type = st.selectbox("🚨 Chọn loại vi phạm", ["Copyright/DMCA", "Phishing", "Gambling"])
 
 # === Khi nhấn nút Gửi báo cáo ===
 if st.button("📤 Gửi báo cáo"):
-    if not (sender_email and password and openai_api_key and domain):
         st.error("⚠️ Vui lòng nhập đầy đủ tất cả các trường bắt buộc!")
         st.stop()
 
-    client = openai.OpenAI(api_key=openai_api_key)
+    client = PoeClient(poe_token)
 
     # === Giả lập thông tin WHOIS để test UI ===
     registrar = "namecheap"  # hoặc thay bằng "godaddy" để test nhánh khác
@@ -50,7 +46,6 @@ if st.button("📤 Gửi báo cáo"):
             )
             email_body = response.choices[0].message.content
         except Exception as e:
-            st.error(f"❌ Lỗi khi gọi OpenAI API: {e}")
             st.stop()
 
     edited_body = st.text_area("📄 Chỉnh sửa nội dung email nếu cần", email_body, height=300)
