@@ -7,8 +7,21 @@ import whois
 st.set_page_config(page_title="Phishing Report Tool", page_icon="🛡️")
 st.title("🛡️ Phishing Report Tool")
 
-sender_email = st.text_input("📧 Nhập Gmail của bạn (dùng để gửi)")
-password = st.text_input("🔑 Nhập App Password Gmail", type="password")
+# Lấy danh sách tài khoản từ secrets
+try:
+    accounts = {
+        st.secrets["gmail"]["account1"]["sender_email"]: st.secrets["gmail"]["account1"]["password"],
+        st.secrets["gmail"]["account2"]["sender_email"]: st.secrets["gmail"]["account2"]["password"],
+        st.secrets["gmail"]["account3"]["sender_email"]: st.secrets["gmail"]["account3"]["password"]
+    }
+except KeyError:
+    st.error("⚠️ Vui lòng cấu hình ít nhất một tài khoản Gmail trong secrets!")
+    st.stop()
+
+# Chọn sender_email từ danh sách
+sender_email = st.selectbox("📧 Chọn Gmail để gửi", list(accounts.keys()))
+password = accounts[sender_email]  # Lấy password tương ứng
+
 domain = st.text_input("🌐 Nhập tên miền vi phạm")
 issue_type = st.selectbox("🚨 Chọn loại vi phạm", ["Copyright/DMCA", "Phishing", "Gambling"])
 
@@ -72,5 +85,3 @@ Sincerely,
                 st.success(f"✅ Gửi email thành công tới {to_email}!")
             except Exception as e:
                 st.error(f"❌ Lỗi khi gửi email: {e}")
-
-# Lưu ý: Để bảo mật, nên cấu hình sender_email và password trong Streamlit secrets
