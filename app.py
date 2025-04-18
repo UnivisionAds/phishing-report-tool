@@ -13,12 +13,10 @@ issue_type = st.selectbox("🚨 Chọn loại vi phạm", ["Copyright/DMCA", "Ph
 
 # === Khi nhấn nút Gửi báo cáo ===
 if st.button("📤 Gửi báo cáo"):
-        st.error("⚠️ Vui lòng nhập đầy đủ tất cả các trường bắt buộc!")
-        st.stop()
-
-    client = PoeClient(poe_token)
-
-    # === Giả lập thông tin WHOIS để test UI ===
+    st.error("⚠️ Vui lòng nhập đầy đủ tất cả các trường bắt buộc!")
+    st.stop()
+        client = PoeClient(poe_token)
+        # === Giả lập thông tin WHOIS để test UI ===
     registrar = "namecheap"  # hoặc thay bằng "godaddy" để test nhánh khác
     st.info(f"(Giả lập) 🔍 Tên miền {domain} được xử lý như: {registrar}")
 
