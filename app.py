@@ -7,13 +7,13 @@ import whois
 st.set_page_config(page_title="Phishing Report Tool", page_icon="🛡️")
 st.title("🛡️ Phishing Report Tool")
 
-sender_email = st.secrets["gmail"]["sender_email"]
-password = st.secrets["gmail"]["password"]
+sender_email = st.text_input("📧 Nhập Gmail của bạn (dùng để gửi)")
+password = st.text_input("🔑 Nhập App Password Gmail", type="password")
 domain = st.text_input("🌐 Nhập tên miền vi phạm")
 issue_type = st.selectbox("🚨 Chọn loại vi phạm", ["Copyright/DMCA", "Phishing", "Gambling"])
 
-# === Khi nhấn nút Gửi báo cáo ===
-if st.button("📤 Gửi báo cáo"):
+# === Khi nhấn nút Tạo báo cáo ===
+if st.button("📝 Tạo báo cáo"):
     # Kiểm tra các trường bắt buộc
     if not all([sender_email, password, domain, issue_type]):
         st.error("⚠️ Vui lòng nhập đầy đủ tất cả các trường bắt buộc!")
@@ -51,23 +51,26 @@ Sincerely,
 [Your Name]
         """
 
-        edited_body = st.text_area("📄 Chỉnh sửa nội dung email nếu cần", email_body, height=300)
+        # Cho phép chỉnh sửa nội dung email
+        edited_body = st.text_area("📄 Chỉnh sửa nội dung email", email_body, height=300)
 
-        # Gửi email qua Gmail SMTP
-        try:
-            msg = EmailMessage()
-            msg['From'] = sender_email
-            msg['To'] = to_email
-            msg['Subject'] = f"Violation Report – {domain}"
-            msg.set_content(edited_body)
+        # Nút xác nhận gửi email
+        if st.button("📤 Xác nhận và gửi email"):
+            # Gửi email qua Gmail SMTP
+            try:
+                msg = EmailMessage()
+                msg['From'] = sender_email
+                msg['To'] = to_email
+                msg['Subject'] = f"Violation Report – {domain}"
+                msg.set_content(edited_body)
 
-            with smtplib.SMTP("smtp.gmail.com", 587) as server:
-                server.starttls()
-                server.login(sender_email, password)
-                server.send_message(msg)
+                with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                    server.starttls()
+                    server.login(sender_email, password)
+                    server.send_message(msg)
 
-            st.success(f"✅ Gửi email thành công tới {to_email}!")
-        except Exception as e:
-            st.error(f"❌ Lỗi khi gửi email: {e}")
+                st.success(f"✅ Gửi email thành công tới {to_email}!")
+            except Exception as e:
+                st.error(f"❌ Lỗi khi gửi email: {e}")
 
 # Lưu ý: Để bảo mật, nên cấu hình sender_email và password trong Streamlit secrets
