@@ -18,9 +18,6 @@ if st.button("📤 Gửi báo cáo"):
 
     client = PoeClient(poe_token)
 
-    # === Giả lập thông tin WHOIS để test UI ===
-registrar = "namecheap"  # hoặc thay bằng "godaddy" để test nhánh khác
-    st.info(f"(Giả lập) 🔍 Tên miền {domain} được xử lý như: {registrar}")
 
     # === Xác định email đích phù hợp ===
     to_email = None
@@ -38,7 +35,6 @@ registrar = "namecheap"  # hoặc thay bằng "godaddy" để test nhánh khác
     Use legal language and urgency.
     """
 
-    with st.spinner("🧠 Đang soạn nội dung email bằng ChatGPT..."):
         try:
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
