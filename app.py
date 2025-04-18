@@ -83,7 +83,7 @@ if st.button("📝 Tạo báo cáo"):
         email_body = f"""
 Dear Sir/Madam,
 
-I am writing to report a serious violation involving the domain {domain}. This domain is engaging in {issue_type}, impersonating a legitimate brand, and causing significant harm.
+I am writing to report a serious violation involving the domain {domain}. This domain is engaging in {issue_type}, impersonating {original_brand}, a legitimate and well-known brand, and causing significant harm.
 
 I request the immediate takedown of this domain to prevent further damage. Please take urgent action as per applicable laws and regulations.
 
