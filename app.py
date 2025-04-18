@@ -38,12 +38,13 @@ else:
     password = st.text_input("🔑 Nhập App Password", type="password")
 
 domain = st.text_input("🌐 Nhập tên miền vi phạm")
+original_brand = st.text_input("🏷️ Nhập tên brand chính gốc bị giả mạo")
 issue_type = st.selectbox("🚨 Chọn loại vi phạm", ["Copyright/DMCA", "Phishing", "Gambling"])
 
 # === Khi nhấn nút Tạo báo cáo ===
 if st.button("📝 Tạo báo cáo"):
     # Kiểm tra các trường bắt buộc
-    if not all([sender_email, password, domain, issue_type]):
+    if not all([sender_email, password, domain, original_brand, issue_type]):
         st.error("⚠️ Vui lòng nhập đầy đủ tất cả các trường bắt buộc!")
     else:
         # Lấy thông tin WHOIS để xác định registrar
@@ -112,7 +113,8 @@ Sincerely,
                 # Ghi log email gửi
                 log_message = (
                     f"Email sent: From={sender_email}, To={to_email}, "
-                    f"Domain={domain}, Issue={issue_type}, Registrar={registrar}, Content=\n{edited_body}"
+                    f"Domain={domain}, Issue={issue_type}, Registrar={registrar}, "
+                    f"OriginalBrand={original_brand}, Content=\n{edited_body}"
                 )
                 logger.info(log_message)
 
