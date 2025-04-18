@@ -2,12 +2,24 @@ import streamlit as st
 import smtplib
 from email.message import EmailMessage
 import whois
+import logging
+from datetime import datetime
+
+# Cấu hình logging
+logging.basicConfig(
+    filename="email_log.txt",
+    level=logging.INFO,
+    format="%(asctime)s | %(message)s",
+    filemode="a"
+)
+logger = logging.getLogger()
 
 # === Giao diện nhập liệu ===
 st.set_page_config(page_title="Phishing Report Tool", page_icon="🛡️")
 st.title("🛡️ Phishing Report Tool")
 
 # Lấy danh sách tài khoản từ secrets
+accounts = {}
 try:
     accounts = {
         st.secrets["gmail"]["account1"]["sender_email"]: st.secrets["gmail"]["account1"]["password"],
@@ -15,12 +27,15 @@ try:
         st.secrets["gmail"]["account3"]["sender_email"]: st.secrets["gmail"]["account3"]["password"]
     }
 except KeyError as e:
-    st.error(f"⚠️ Lỗi cấu hình secrets: Thiếu key {e}. Kiểm tra .streamlit/secrets.toml hoặc secrets trên Streamlit Cloud!")
-    st.stop()
+    st.warning(f"⚠️ Lỗi cấu hình secrets: {e}. Sử dụng nhập thủ công.")
 
-# Chọn sender_email từ danh sách
-sender_email = st.selectbox("📧 Chọn Gmail để gửi", list(accounts.keys()))
-password = accounts[sender_email]  # Lấy password tương ứng
+# Chọn hoặc nhập sender_email
+if accounts:
+    sender_email = st.selectbox("📧 Chọn Gmail để gửi", list(accounts.keys()))
+    password = accounts[sender_email]  # Lấy password tương ứng
+else:
+    sender_email = st.text_input("📧 Nhập Gmail của bạn")
+    password = st.text_input("🔑 Nhập App Password", type="password")
 
 domain = st.text_input("🌐 Nhập tên miền vi phạm")
 issue_type = st.selectbox("🚨 Chọn loại vi phạm", ["Copyright/DMCA", "Phishing", "Gambling"])
@@ -45,6 +60,18 @@ if st.button("📝 Tạo báo cáo"):
             to_email = "dmca@namecheap.com" if issue_type == "Copyright/DMCA" else "abuse@namecheap.com"
         elif "godaddy" in registrar:
             to_email = "copyrightcomplaints@godaddy.com"
+        elif "bluehost" in registrar:
+            to_email = "abuse@bluehost.com"
+        elif "hostinger" in registrar:
+            to_email = "abuse@hostinger.com"
+        elif any(r in registrar for r in ["tucows", "opensrs"]):
+            to_email = "abuse@tucows.com"
+        elif "name.com" in registrar:
+            to_email = "abuse@name.com"
+        elif "dynadot" in registrar:
+            to_email = "abuse@dynadot.com"
+        else:
+            to_email = "abuse@registrardomain"
 
         to_email = st.text_input("✉️ Xác nhận hoặc thay đổi email người nhận", to_email or "")
 
@@ -81,6 +108,13 @@ Sincerely,
                     server.starttls()
                     server.login(sender_email, password)
                     server.send_message(msg)
+
+                # Ghi log email gửi
+                log_message = (
+                    f"Email sent: From={sender_email}, To={to_email}, "
+                    f"Domain={domain}, Issue={issue_type}, Registrar={registrar}, Content=\n{edited_body}"
+                )
+                logger.info(log_message)
 
                 st.success(f"✅ Gửi email thành công tới {to_email}!")
             except Exception as e:
