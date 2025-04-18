@@ -21,23 +21,26 @@ if st.button("📤 Gửi báo cáo"):
 
     client = openai.OpenAI(api_key=openai_api_key)
 
-    # === Giả lập thông tin WHOIS để test UI ===
-    registrar = "namecheap"  # hoặc thay bằng "godaddy" để test nhánh khác
+    # === Tra thông tin WHOIS thật ===
+import whois
+
+try:
+    whois_info = whois.whois(domain)
+    registrar = whois_info.registrar.lower() if whois_info.registrar else "unknown"
+    st.info(f"🔍 Tên miền {domain} được đăng ký bởi: {registrar}")
+except Exception as e:
+    registrar = "unknown"
+    st.warning(f"⚠️ Không thể tra cứu WHOIS cho {domain}: {e}")
     st.info(f"(Giả lập) 🔍 Tên miền {domain} được xử lý như: {registrar}")
 
     # === Xác định email đích phù hợp ===
-    
-    # === Xác định email đích phù hợp theo WHOIS và loại vi phạm ===
     to_email = None
     if "namecheap" in registrar:
         to_email = "dmca@namecheap.com" if issue_type == "Copyright/DMCA" else "abuse@namecheap.com"
     elif "godaddy" in registrar:
         to_email = "copyrightcomplaints@godaddy.com"
-    else:
-        to_email = f"abuse@{domain}"
 
     to_email = st.text_input("✉️ Xác nhận hoặc thay đổi email người nhận", to_email or "")
-
 
     # === Sinh nội dung email bằng GPT
     prompt = f"""
