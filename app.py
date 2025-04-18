@@ -14,8 +14,8 @@ try:
         st.secrets["gmail"]["account2"]["sender_email"]: st.secrets["gmail"]["account2"]["password"],
         st.secrets["gmail"]["account3"]["sender_email"]: st.secrets["gmail"]["account3"]["password"]
     }
-except KeyError:
-    st.error("⚠️ Vui lòng cấu hình ít nhất một tài khoản Gmail trong secrets!")
+except KeyError as e:
+    st.error(f"⚠️ Lỗi cấu hình secrets: Thiếu key {e}. Kiểm tra .streamlit/secrets.toml hoặc secrets trên Streamlit Cloud!")
     st.stop()
 
 # Chọn sender_email từ danh sách
