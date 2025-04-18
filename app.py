@@ -8,7 +8,7 @@ st.title("🛡️ Phishing Report Tool")
 
 sender_email = st.text_input("📧 Nhập Gmail của bạn (dùng để gửi)")
 password = st.text_input("🔑 Nhập App Password Gmail", type="password")
-openai_api_key = st.text_input("🧠 Nhập OpenAI API Key", type="password")
+openai_api_key = st.text_input("🔐 Nhập Poe Token (cookie p-b)", type="password")
 domain = st.text_input("🌐 Nhập tên miền vi phạm")
 issue_type = st.selectbox("🚨 Chọn loại vi phạm", ["Copyright/DMCA", "Phishing", "Gambling"])
 
