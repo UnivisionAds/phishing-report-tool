@@ -1,6 +1,5 @@
 import streamlit as st
 import smtplib
-import openai
 from email.message import EmailMessage
 
 # === Giao diện nhập liệu ===
