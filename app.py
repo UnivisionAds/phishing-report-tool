@@ -7,8 +7,8 @@ import whois
 st.set_page_config(page_title="Phishing Report Tool", page_icon="🛡️")
 st.title("🛡️ Phishing Report Tool")
 
-sender_email = st.text_input("📧 Nhập Gmail của bạn (dùng để gửi)")
-password = st.text_input("🔑 Nhập App Password Gmail", type="password")
+sender_email = st.secrets["gmail"]["sender_email"]
+password = st.secrets["gmail"]["password"]
 domain = st.text_input("🌐 Nhập tên miền vi phạm")
 issue_type = st.selectbox("🚨 Chọn loại vi phạm", ["Copyright/DMCA", "Phishing", "Gambling"])
 
