@@ -1,6 +1,3 @@
-
-from poe_api_wrapper import PoeClient
-import os
 import streamlit as st
 import smtplib
 import openai
@@ -12,12 +9,7 @@ st.title("🛡️ Phishing Report Tool")
 
 sender_email = st.text_input("📧 Nhập Gmail của bạn (dùng để gửi)")
 password = st.text_input("🔑 Nhập App Password Gmail", type="password")
-
-poe_token = st.text_input("🔐 Nhập Poe Token (cookie p-b)", type="password")
-if not poe_token:
-    st.warning("⚠️ Vui lòng nhập Poe Token để tạo email bằng Claude!")
-    st.stop()
-
+openai_api_key = st.text_input("🧠 Nhập OpenAI API Key", type="password")
 domain = st.text_input("🌐 Nhập tên miền vi phạm")
 issue_type = st.selectbox("🚨 Chọn loại vi phạm", ["Copyright/DMCA", "Phishing", "Gambling"])
 
@@ -29,16 +21,8 @@ if st.button("📤 Gửi báo cáo"):
 
     client = openai.OpenAI(api_key=openai_api_key)
 
-    # === Tra thông tin WHOIS thật ===
-import whois
-
-try:
-    whois_info = whois.whois(domain)
-    registrar = whois_info.registrar.lower() if whois_info.registrar else "unknown"
-    st.info(f"🔍 Tên miền {domain} được đăng ký bởi: {registrar}")
-except Exception as e:
-    registrar = "unknown"
-    st.warning(f"⚠️ Không thể tra cứu WHOIS cho {domain}: {e}")
+    # === Giả lập thông tin WHOIS để test UI ===
+    registrar = "namecheap"  # hoặc thay bằng "godaddy" để test nhánh khác
     st.info(f"(Giả lập) 🔍 Tên miền {domain} được xử lý như: {registrar}")
 
     # === Xác định email đích phù hợp ===
