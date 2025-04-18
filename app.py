@@ -1,3 +1,6 @@
+
+from poe_api_wrapper import PoeClient
+import os
 import streamlit as st
 import smtplib
 import openai
@@ -9,7 +12,12 @@ st.title("🛡️ Phishing Report Tool")
 
 sender_email = st.text_input("📧 Nhập Gmail của bạn (dùng để gửi)")
 password = st.text_input("🔑 Nhập App Password Gmail", type="password")
-openai_api_key = st.text_input("🧠 Nhập OpenAI API Key", type="password")
+
+poe_token = st.text_input("🔐 Nhập Poe Token (cookie p-b)", type="password")
+if not poe_token:
+    st.warning("⚠️ Vui lòng nhập Poe Token để tạo email bằng Claude!")
+    st.stop()
+
 domain = st.text_input("🌐 Nhập tên miền vi phạm")
 issue_type = st.selectbox("🚨 Chọn loại vi phạm", ["Copyright/DMCA", "Phishing", "Gambling"])
 
